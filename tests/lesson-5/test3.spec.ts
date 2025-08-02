@@ -22,17 +22,42 @@ test('Test3', async ({ page }) => {
             await todo.clear();
             await todo.fill(`Todo: ${i}`);
             await addtask.click();
-            console.log('Add 100 Todo Items ');
+        }
+        console.log('Add 100 Todo Items ');
+    });
+    await test.step("Step 03: Odd Item & Delete ", async () => {
+        //3.1: Get all text of the specified locator into array A1
+        const todoElements = await page.locator('xpath=//ul[@id="task-list"]//span').all();
+        const arrayA1: string[] = [];
+
+        for (const element of todoElements) {
+            const text = await element.textContent();
+            if (text) {
+                arrayA1.push(text.trim());
+            }
+        }
+
+        console.log('Array A1 (all todo texts):', arrayA1);
+
+        //3.2 In A2 tu A1 loc theo so le
+        const arrayA2 = arrayA1.filter(todo => parseInt(todo.split(': ')[1]) % 2 === 1);
+
+        console.log('Array A2 (odd numbers to delete):', arrayA2);
+
+        //3.3: Write a for loop for Array A2 and click the delete buttons
+
+        for (let i = 0; i < arrayA2.length; i++) {
+            const oddNumber = parseInt(arrayA2[i].split(': ')[1]);
+            const deleteButton = page.locator(`#todo-${oddNumber}-delete`);
+            await deleteButton.click();
+            // page.on('dialog', async dialog => {
+            //     console.log(`Dialog message: ${dialog.message()}`);
+            //     await dialog.accept(); // This clicks OK
+            // });
         }
     });
-    // await test.step("Step 03: Remove Odd Todo Items", async () => {
 
-    //     //Remove Odd Items
-    //     const list = page.locator('xpath=//*[@id="task-list"]');
 
- 
-    // });
-    // CHưa có solution
 
 
 }); 
